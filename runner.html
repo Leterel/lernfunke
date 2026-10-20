@@ -1,0 +1,37 @@
+<!doctype html><meta charset="utf-8">
+<!-- Independent opaque origin; this policy also applies to the blob worker.
+     No same-origin permission, storage, network, external scripts or navigation. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+<script>
+(() => {
+ let started=false;
+ addEventListener('message',event=>{
+  if(started||event.source!==parent||event.data?.type!=='run'||typeof event.data.nonce!=='string'||typeof event.data.code!=='string'||event.data.code.length>20000||event.ports.length!==1)return;
+  started=true;
+  const {nonce,code}=event.data,port=event.ports[0];let ended=false,worker,url,workerChannel;
+  const finish=result=>{if(ended)return;ended=true;clearTimeout(timer);worker?.terminate();workerChannel?.port1.close();if(url)URL.revokeObjectURL(url);port.postMessage({...result,nonce});port.close();};
+  const timer=setTimeout(()=>finish({ok:false,error:'Zeitlimit erreicht. Prüfe deinen Code auf Endlosschleifen.',results:[]}),1000);
+  try{
+   const source=`self.onmessage = event => {
+    const send=event.ports[0].postMessage.bind(event.ports[0]), equal=Object.is, stringify=String;
+    self.onmessage=null;
+    try {
+     const fn=new Function('zahl','"use strict";'+${JSON.stringify(code)});
+     const results=[], inputs=[3,0,-4,1.5];let passed=true;
+     for(let index=0;index<4;index++) {
+      const input=inputs[index];
+      const actual=fn(input),expected=input*2;
+      const pass=equal(actual,expected);passed=passed&&pass;
+      results[index]={input,expected,actual:typeof actual==='number'?stringify(actual):typeof actual,pass};
+     }
+     send({ok:passed,error:'',results});
+    } catch(error){send({ok:false,error:String(error?.message||error).slice(0,500),results:[]});}
+   };`;
+   url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));worker=new Worker(url);
+   workerChannel=new MessageChannel();workerChannel.port1.onmessage=event=>finish(event.data);
+   worker.postMessage({},[workerChannel.port2]);
+   worker.onerror=()=>finish({ok:false,error:'Code konnte nicht ausgeführt werden.',results:[]});
+  }catch{finish({ok:false,error:'Isolierte Ausführung konnte nicht gestartet werden.',results:[]});}
+ });
+})();
+</script>
