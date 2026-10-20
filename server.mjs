@@ -9,7 +9,8 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg
 const sandbox="sandbox allow-scripts; default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'";
 export async function serve(port=4178){
  const runner=await readFile(resolve(root,'runner.html'),'utf8');
- const runnerScript=runner.match(/<script>([\s\S]*?)<\/script>/)[1];
+ // HTML parsing normalizes CRLF before CSP checks the inline-script hash.
+ const runnerScript=runner.match(/<script>([\s\S]*?)<\/script>/)[1].replace(/\r\n?/g,'\n');
  const runnerHash=createHash('sha256').update(runnerScript).digest('base64');
  const server=createServer(async(req,res)=>{
   // Bind only to IPv4 loopback and reject foreign Host headers (DNS rebinding).
