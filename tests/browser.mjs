@@ -1,5 +1,5 @@
 import {pathToFileURL} from 'node:url';
-const {chromium}=await import(process.env.PLAYWRIGHT_MODULE?pathToFileURL(process.env.PLAYWRIGHT_MODULE):new URL('../../discord-alternative/node_modules/playwright/index.mjs',import.meta.url));
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE?pathToFileURL(process.env.PLAYWRIGHT_MODULE):'playwright');
 import {serve} from '../server.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -10,7 +10,7 @@ server.on('upgrade',(request,socket)=>{if(request.url.includes('isolation-probe'
 let browser;const checks=[];
 const check=(name)=>{checks.push(name);console.log('PASS:',name);};
 try{
- browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--no-sandbox']});
+ browser=await chromium.launch({...(process.env.TEST_CHROME?{executablePath:process.env.TEST_CHROME}:{channel:'chrome'}),headless:true});
  const context=await browser.newContext({viewport:{width:1280,height:1000},timezoneId:'Europe/Berlin',acceptDownloads:true});const page=await context.newPage();
  page.setDefaultTimeout(10000);const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto(origin);await page.waitForFunction(()=>!document.getElementById('run').disabled);

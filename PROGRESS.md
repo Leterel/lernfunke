@@ -21,3 +21,12 @@ Ein lokales Quellenpaket mit Startdatei und Nachweisen erstellt. Kein öffentlic
 GitHub-Repository, Hosting, physisches Handy oder Zertifikat eingerichtet. Weitere
 Lektionen, Englisch, KI, Synchronisierung und native App bleiben separate Arbeit.
 Details und ehrliche Grenzen: VERIFICATION.md und SECURITY.md.
+
+## 21.10.2026 — Öffentlich reproduzierbare Tests
+
+Browser-Testabhängigkeit Playwright1.58.2 per package-lock festgelegt. Browserpfad
+optional über TEST_CHROME, sonst installierter Chrome-Kanal; kein fest verdrahteter
+Nachbarprojektpfad und keine erzwungene Deaktivierung der Browser-Sandbox mehr.
+App weiterhin ohne Laufzeitabhängigkeiten. Alle fünf Node-Testgruppen und alle
+21 echten Chrome-Prüfungen erneut bestanden. User erlaubt nun GitHub-Veröffentlichung;
+Git-Verlauf vor Veröffentlichung auf erkennbare Geheimnisse geprüft (keine Funde).

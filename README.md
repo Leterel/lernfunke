@@ -59,15 +59,13 @@ npm test
 npm run test:browser
 ```
 
-Node-Tests brauchen keine Pakete. Browserregressionen verwenden vorhandenes
-Playwright aus dem benachbarten SofaFunk-Projekt und Chrome unter
-`C:\Program Files\Google\Chrome\Application\chrome.exe`. Bei separat entpackten
-Quellen den vorhandenen Playwright-Modulpfad setzen:
+Node-Tests brauchen keine Pakete. Für die Browserregressionen einmal `npm ci`
 
-```powershell
-$env:PLAYWRIGHT_MODULE = 'C:\Pfad\zu\playwright\index.mjs'
-npm run test:browser
-```
+ausführen; Playwright ist für Tests fest versioniert. Die App selbst hat keine
+Laufzeit-Abhängigkeiten und braucht weiterhin kein `npm install`.
+Chrome wird über den installierten Kanal gefunden. Optional kann `TEST_CHROME`
+auf einen konkreten Browserpfad zeigen. Alternativ ohne Installation ein bereits
+vorhandenes Playwright-Modul über `PLAYWRIGHT_MODULE` angeben.
 
 Alle Tests benutzen frische Profile, synthetischen Code und temporären Loopback-
 Server. Keine privaten Tabs, Dateien oder physischen Geräte. Belege: fünf Node-
