@@ -1,8 +1,11 @@
 # Lernfunke – lokal programmieren lernen
 
-Eigenständiger deutscher Prototyp: eine eigene JavaScript-Lektion, echte
+Eigenständiger deutscher Prototyp: vier eigene JavaScript-Lektionen, echte
 Codeausführung, Tagesstreak und lokale Sicherungen. Keine Konten, Cloud,
 Werbung, Laufzeit-Abhängigkeiten oder Serverkosten. Keine fremden Kurse/Assets.
+
+Öffentlicher Quellcode: [Leterel/lernfunke](https://github.com/Leterel/lernfunke).
+Aktueller Stand: 0.2.0. Kurzanleitung: [START-HIER.md](START-HIER.md).
 
 ## Starten
 
@@ -27,8 +30,13 @@ Nicht `index.html` direkt öffnen: Module und Service Worker brauchen die lokale
 
 ## Umgesetzt
 
-- Eigene kurze Lektion über Parameter und `return`, vier echte Funktionsaufrufe
-  mit positiven/negativen Zahlen, null und einem Bruchwert.
+- Zusammenhängender Lernpfad: `return`, Variablen, `if/else` und `for`-Schleifen.
+  Jede Lektion hat eigene Erklärungen, Beispiele, Aufgabe, Hinweis und vier echte
+  Funktionsaufrufe, darunter Null-/Bruchwerte und Entscheidungsgrenzen.
+- Freie Lektionwahl, nächste Lektion und dauerhaft gespeicherter Zwischenstand
+  pro Lektion. Mehrere Lektionen am selben Tag ergeben nur einen Lerntag.
+  Codeentwürfe bleiben beim Wechseln im offenen Tab erhalten; nach Neuladen
+  erscheint wieder der Startcode. Nur Abschlüsse werden gesichert.
 - Opaque-Origin-Sandbox ohne Same-Origin-Berechtigung, darin ein kurzlebiger
   Worker. CSP sperrt Netzwerk. Ein Worker auf dem Hauptorigin wird nicht verwendet.
   Ein-Sekunden-Workerlimit plus äußere Drei-Sekunden-Grenze.
@@ -36,7 +44,9 @@ Nicht `index.html` direkt öffnen: Module und Service Worker brauchen die lokale
   Lektion+lokales Datum bilden den idempotenten Schlüssel, auch über mehrere Tabs.
 - Streak, Lerntage und längste Serie. Gestern abgeschlossene Serien bleiben bis
   heute Abend erhalten; ein ausgelassener Tag unterbricht die aktuelle Serie.
-- JSON-Export und atomarer Import-Merge. Duplikate zählen einmal; ungültige und
+- JSON-v2-Export und atomarer Import-Merge, auch für alte v1-Sicherungen.
+  Die bestehende IndexedDB-v1 und ursprüngliche Abschluss-ID bleiben erhalten.
+  Duplikate zählen einmal; ungültige und
   übergroße Sicherungen werden vor dem Schreiben vollständig abgelehnt.
 - Offline-App-Shell inklusive isoliertem Runner, ohne externe Schriften/Assets.
 
@@ -48,7 +58,7 @@ Import ergänzt, löscht aber nichts. Sicherungen enthalten nur Tagesabschlüsse
 keinen Code oder Kontodaten. Gerätezeit und Sicherungen sind vom Nutzer editierbar:
 kein manipulationssicherer Leistungsnachweis und kein anerkanntes Zertifikat.
 
-Genau eine Lektion; englische Kurse, KI-Tutor, Konten, Synchronisierung und native
+Vier Lektionen zum Einstieg; englische Kurse, KI-Tutor, Konten, Synchronisierung und native
 App sind spätere Arbeit. Die Sandbox ist keine Betriebssystem-VM mit garantierter
 RAM-Quote. [SECURITY.md](SECURITY.md) erklärt die Ausführungsgrenzen.
 
@@ -69,4 +79,6 @@ vorhandenes Playwright-Modul über `PLAYWRIGHT_MODULE` angeben.
 
 Alle Tests benutzen frische Profile, synthetischen Code und temporären Loopback-
 Server. Keine privaten Tabs, Dateien oder physischen Geräte. Belege: fünf Node-
-Testgruppen und 21 echte Chrome-Prüfungen, siehe [VERIFICATION.md](VERIFICATION.md).
+Testgruppen im ursprünglichen Stand siehe [VERIFICATION.md](VERIFICATION.md).
+Der neue Lernpfad wird mit acht Node-Testgruppen und 28 Chrome-Prüfungen geprüft:
+[VERIFICATION-20261022.md](VERIFICATION-20261022.md).

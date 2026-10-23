@@ -1,4 +1,5 @@
 export const LESSON='js-return-1';
+import {lessonIds} from './curriculum.js';
 export function localDay(now=new Date()){
  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 }
@@ -13,16 +14,17 @@ export function validateEvents(events){
  if(!Array.isArray(events)||events.length>20000)throw Error('Ungültige oder zu große Fortschrittsliste.');
  const unique=new Map();
  for(const event of events){
-  if(!event||typeof event!=='object'||event.lesson!==LESSON||!validDay(event.day)||event.id!==`${LESSON}:${event.day}`)
+  if(!event||typeof event!=='object'||!lessonIds.includes(event.lesson)||!validDay(event.day)||event.id!==`${event.lesson}:${event.day}`)
    throw Error('Die Sicherung enthält ungültige Lernabschlüsse.');
-  unique.set(event.id,{id:event.id,lesson:LESSON,day:event.day});
+  unique.set(event.id,{id:event.id,lesson:event.lesson,day:event.day});
  }
  return [...unique.values()].sort((a,b)=>a.id.localeCompare(b.id));
 }
 export function parseBackup(text){
  if(typeof text!=='string'||text.length>2_000_000)throw Error('Sicherung zu groß (höchstens 2 MB).');
  let data;try{data=JSON.parse(text);}catch{throw Error('Das ist keine gültige JSON-Sicherung.');}
- if(!data||data.format!=='lernfunke-progress'||data.version!==1)throw Error('Unbekanntes Sicherungsformat.');
+ if(!data||data.format!=='lernfunke-progress'||![1,2].includes(data.version))throw Error('Unbekanntes Sicherungsformat.');
+ if(data.version===1&&Array.isArray(data.events)&&data.events.some(event=>event?.lesson!==LESSON))throw Error('Eine alte Sicherung darf nur die ursprüngliche Lektion enthalten.');
  return validateEvents(data.events);
 }
 export function summary(events,today=localDay()){
@@ -33,5 +35,6 @@ export function summary(events,today=localDay()){
  for(const day of [...days].sort()){
   run=last===previousDay(day)?run+1:1;longest=Math.max(longest,run);last=day;
  }
- return {events:clean,days:days.size,current,longest,complete:clean.length>0,today:days.has(today)};
+ const perLesson=Object.fromEntries(lessonIds.map(id=>{const entries=clean.filter(event=>event.lesson===id);return [id,{complete:entries.length>0,today:entries.some(event=>event.day===today),days:entries.length}];}));
+ return {events:clean,days:days.size,current,longest,complete:clean.length>0,today:days.has(today),perLesson,completedLessons:lessonIds.filter(id=>perLesson[id].complete).length};
 }

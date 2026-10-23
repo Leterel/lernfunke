@@ -24,6 +24,21 @@ spätestens nach drei Sekunden auf. Endlosschleifen blockieren diese Timer nicht
 Jeder Versuch erhält neue Frames, Worker und Kanäle. Veränderte Prototypen werden
 nicht zwischen Versuchen übernommen.
 
+## Lektionen und feste Tests
+
+Der Elternaufruf übermittelt ausschließlich Lerncode, eine bekannte Lektion-ID
+und die Nonce. Parameter und vier numerische Prüffälle werden beim Serverstart
+aus dem eigenen `curriculum.js` in die Runner-Vorlage eingebettet und in deren
+CSP-Hash einbezogen. Der Service Worker speichert genau diese gerenderte Vorlage.
+Der Runner akzeptiert nur eigene IDs (keine geerbten Objektschlüssel) und ignoriert
+mitgesendete Tests/Erwartungswerte. Lerncode kann den Fixture-/Ergebniskanal nicht
+erreichen. Freie Testdefinitionen aus Nachrichten, Importen oder Nutzercode sind
+nicht zugelassen. Die Hauptseite bindet jede Antwort zusätzlich an ihre Lektion-ID.
+
+Die Tests prüfen Funktionsverhalten, keine vorgeschriebene Syntax oder einen
+vorgeschriebenen Algorithmus. Der Lernpfad ist kein manipulationssicheres Examen;
+die lokalen Fortschrittsdaten bleiben vom Nutzer editierbar.
+
 ## Offline-Pfad
 
 Eine Navigation eines opaque-Origin-Frames kann nicht zuverlässig vom Service

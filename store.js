@@ -1,4 +1,5 @@
 import {LESSON,localDay,validDay,parseBackup,validateEvents} from './model.js';
+import {lessonIds} from './curriculum.js';
 let connection;
 function db(){
  return connection??=new Promise((resolve,reject)=>{
@@ -23,13 +24,14 @@ async function transaction(mode,operation){
 export async function list(){
  let request;await transaction('readonly',store=>{request=store.getAll();});return validateEvents(request.result);
 }
-export async function complete(day=localDay()){
+export async function complete(day=localDay(),lesson=LESSON){
  if(!validDay(day))throw Error('Ungültiges Tagesdatum.');
- const event={id:`${LESSON}:${day}`,lesson:LESSON,day};
+ if(!lessonIds.includes(lesson))throw Error('Unbekannte Lektion.');
+ const event={id:`${lesson}:${day}`,lesson,day};
  await transaction('readwrite',store=>store.put(event));return event;
 }
 export async function exportBackup(){
- return JSON.stringify({format:'lernfunke-progress',version:1,events:await list()},null,2);
+ return JSON.stringify({format:'lernfunke-progress',version:2,events:await list()},null,2);
 }
 export async function importBackup(text){
  // Validate the entire payload before opening a write transaction. Import merges

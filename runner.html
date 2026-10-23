@@ -4,23 +4,24 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
 <script>
 (() => {
+ const lessonSpecs=/*TRUSTED_LESSON_SPECS*/;
  let started=false;
  addEventListener('message',event=>{
-  if(started||event.source!==parent||event.data?.type!=='run'||typeof event.data.nonce!=='string'||typeof event.data.code!=='string'||event.data.code.length>20000||event.ports.length!==1)return;
+  if(started||event.source!==parent||event.data?.type!=='run'||typeof event.data.nonce!=='string'||typeof event.data.code!=='string'||event.data.code.length>20000||!Object.hasOwn(lessonSpecs,event.data.lesson)||event.ports.length!==1)return;
   started=true;
-  const {nonce,code}=event.data,port=event.ports[0];let ended=false,worker,url,workerChannel;
-  const finish=result=>{if(ended)return;ended=true;clearTimeout(timer);worker?.terminate();workerChannel?.port1.close();if(url)URL.revokeObjectURL(url);port.postMessage({...result,nonce});port.close();};
+  const {nonce,code,lesson}=event.data,spec=lessonSpecs[lesson],port=event.ports[0];let ended=false,worker,url,workerChannel;
+  const finish=result=>{if(ended)return;ended=true;clearTimeout(timer);worker?.terminate();workerChannel?.port1.close();if(url)URL.revokeObjectURL(url);port.postMessage({...result,nonce,lesson});port.close();};
   const timer=setTimeout(()=>finish({ok:false,error:'Zeitlimit erreicht. Prüfe deinen Code auf Endlosschleifen.',results:[]}),1000);
   try{
    const source=`self.onmessage = event => {
     const send=event.ports[0].postMessage.bind(event.ports[0]), equal=Object.is, stringify=String;
     self.onmessage=null;
     try {
-     const fn=new Function('zahl','"use strict";'+${JSON.stringify(code)});
-     const results=[], inputs=[3,0,-4,1.5];let passed=true;
-     for(let index=0;index<4;index++) {
-      const input=inputs[index];
-      const actual=fn(input),expected=input*2;
+     const fixtures=${JSON.stringify(spec.cases)},fn=new Function(${JSON.stringify(spec.parameter)},'"use strict";'+${JSON.stringify(code)});
+     const results=[];let passed=true;
+     for(let index=0;index<fixtures.length;index++) {
+      const input=fixtures[index][0],expected=fixtures[index][1];
+      const actual=fn(input);
       const pass=equal(actual,expected);passed=passed&&pass;
       results[index]={input,expected,actual:typeof actual==='number'?stringify(actual):typeof actual,pass};
      }

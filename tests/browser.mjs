@@ -43,9 +43,40 @@ try{
  await freshPage.locator('#import').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(backup)});await freshPage.waitForFunction(()=>document.getElementById('backup-status').textContent.includes('atomar'));assert.equal(await freshPage.locator('#streak').textContent(),'1');check('UI import restores progress in a fresh browser profile');
  const failureContext=await browser.newContext();const failure=await failureContext.newPage();await failure.goto(origin);await failure.waitForFunction(()=>!document.getElementById('run').disabled);
  await failure.evaluate(()=>{IDBObjectStore.prototype.put=function(){throw new DOMException('quota','QuotaExceededError');};});await failure.locator('#code').fill('return zahl*2;');await failure.locator('#run').click();await failure.waitForFunction(()=>!document.getElementById('run').disabled);assert.equal(await failure.locator('#celebration').isVisible(),false);assert.equal((await failure.evaluate(async()=> (await import('./store.js')).list())).length,0);check('storage write failure shows no success and commits no partial progress');
+ await page.locator('[data-lesson="js-return-1"]').click();
  await context.setOffline(true);await page.reload();await page.waitForFunction(()=>!document.getElementById('run').disabled);assert.equal(await page.locator('#streak').textContent(),'1');await page.locator('#code').fill('return zahl*2;');await page.locator('#run').click();await page.locator('#celebration').waitFor({state:'visible'});check('offline reload, opaque worker execution and persistence work from cached shell');
  assert.equal(await page.locator('iframe').count(),0);check('sandbox and worker cleaned up after runs');
- await page.locator('#skip').click();await page.screenshot({path:new URL('desktop.png',evidence).pathname.replace(/^\/(\w:)/,'$1'),fullPage:true});
+ const solutions=[['js-variables-1','const sekundenProMinute=60; return minuten*sekundenProMinute;'],['js-conditions-1','if(kaufwert>=50){return 0;}else{return 5;}'],['js-loops-1','let summe=0;for(let i=1;i<=anzahl;i++){summe+=i;}return summe;']];
+ for(const [id,solution] of solutions){
+  await page.locator(`[data-lesson="${id}"]`).click();
+  await page.locator('#run').click();await page.waitForFunction(()=>!document.getElementById('run').disabled);assert.equal(await page.locator('#celebration').isVisible(),false);
+  await page.locator('#code').fill(solution);await page.locator('#run').click();await page.locator('#celebration').waitFor({state:'visible'});
+ }
+ stored=await page.evaluate(async()=> (await import('./store.js')).list());assert.equal(stored.length,4);assert.equal(await page.locator('#streak').textContent(),'1');assert.match(await page.locator('#course-progress').textContent(),/4 von 4/);check('all four task-specific lessons execute offline and count only one learning day');
+ await page.reload();await page.waitForFunction(()=>!document.getElementById('run').disabled);assert.match(await page.locator('#signature').textContent(),/aufsummieren/);assert.match(await page.locator('#course-progress').textContent(),/4 von 4/);check('chosen lesson and per-lesson progress survive offline reload');
+ result=await page.evaluate(async()=> (await import('./execute.js')).execute('return 0;','constructor'));assert.equal(result.ok,false);check('unknown and inherited lesson identifiers cannot select executable test definitions');
+ result=await page.evaluate(async()=> (await import('./execute.js')).execute("Object.prototype.ok=true;postMessage({ok:true,results:[]});return 0;",'js-loops-1'));assert.equal(result.ok,false);check('new lesson fixtures remain isolated from forged messages and prototype poisoning');
+ const forgedDefinitions=await page.evaluate(async()=>{
+  const template=await(await fetch('./runner.html')).text();
+  return new Promise(resolve=>{const frame=document.createElement('iframe');frame.sandbox='allow-scripts';frame.hidden=true;frame.srcdoc=template;
+   const channel=new MessageChannel();const timeout=setTimeout(()=>{frame.remove();channel.port1.close();resolve(null);},3000);
+   channel.port1.onmessage=({data})=>{clearTimeout(timeout);frame.remove();channel.port1.close();resolve(data);};
+   frame.onload=()=>frame.contentWindow.postMessage({type:'run',nonce:'injected-test-definitions',lesson:'js-loops-1',code:'return 0;',cases:[[0,0]],expected:0,parameter:'ignored'},'*',[channel.port2]);document.body.append(frame);
+  });
+ });
+ assert.equal(forgedDefinitions.ok,false);assert.equal(forgedDefinitions.results.length,4);assert.equal(forgedDefinitions.results[3].expected,55);check('runner ignores caller-supplied fixtures and uses the authored lesson tests');
+ const multiBackup=await page.evaluate(async()=> (await import('./store.js')).exportBackup());assert.equal(JSON.parse(multiBackup).version,2);
+ await freshPage.locator('#import').setInputFiles({name:'course.json',mimeType:'application/json',buffer:Buffer.from(multiBackup)});await freshPage.waitForFunction(()=>document.getElementById('course-progress').textContent.includes('4 von 4'));check('v2 export/import preserves all four lesson completions');
+ const migrationContext=await browser.newContext();const migrated=await migrationContext.newPage();await migrated.goto(origin+'/icon.svg');
+ await migrated.evaluate(async()=>{
+  await new Promise((resolve,reject)=>{const request=indexedDB.open('lernfunke-local',1);request.onupgradeneeded=()=>request.result.createObjectStore('events',{keyPath:'id'});request.onerror=reject;request.onsuccess=()=>{const database=request.result;const tx=database.transaction('events','readwrite');tx.objectStore('events').put({id:'js-return-1:2000-01-01',lesson:'js-return-1',day:'2000-01-01'});tx.oncomplete=()=>{database.close();resolve();};};});
+ });
+ await migrated.goto(origin);await migrated.waitForFunction(()=>!document.getElementById('run').disabled);assert.match(await migrated.locator('#course-progress').textContent(),/1 von 4/);
+ const legacy=JSON.stringify({format:'lernfunke-progress',version:1,events:[{id:'js-return-1:2000-01-01',lesson:'js-return-1',day:'2000-01-01'}]});
+ await migrated.locator('#import').setInputFiles({name:'old-v1.json',mimeType:'application/json',buffer:Buffer.from(legacy)});await migrated.waitForFunction(()=>document.getElementById('backup-status').textContent.includes('atomar'));
+ await migrated.locator('[data-lesson="js-variables-1"]').click();await migrated.locator('#code').fill(solutions[0][1]);await migrated.locator('#run').click();await migrated.locator('#celebration').waitFor({state:'visible'});
+ const preserved=await migrated.evaluate(async()=> (await import('./store.js')).list());assert.equal(preserved.length,2);assert.ok(preserved.some(event=>event.id==='js-return-1:2000-01-01'));check('existing IndexedDB v1 and legacy backup migrate without losing original completion');
+ await page.screenshot({path:new URL('desktop.png',evidence).pathname.replace(/^\/(\w:)/,'$1'),fullPage:true});
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:new URL('mobile.png',evidence).pathname.replace(/^\/(\w:)/,'$1'),fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);check('mobile layout has no horizontal overflow');
  assert.deepEqual(errors,[]);check('no uncaught application errors');
  await writeFile(new URL('results.json',evidence),JSON.stringify({date:new Date().toISOString(),browser:await browser.version(),checks,limits:['Local educational MVP only; no hostile-code memory quota or process security guarantee','Device calendar determines streak dates; no trusted server clock','No store publication or Android build']},null,2));

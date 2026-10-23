@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {LESSON,localDay,validDay,previousDay,summary,parseBackup,validateEvents} from '../model.js';
+import {lessons,lessonIds} from '../curriculum.js';
 const event=day=>({id:`${LESSON}:${day}`,lesson:LESSON,day});
 test('calendar dates and DST-independent previous day',()=>{
  assert.equal(validDay('2024-02-29'),true);for(const value of ['2026-02-29','2026-04-31','2026-1-01',null,'garbage'])assert.equal(validDay(value),false);
@@ -24,4 +25,32 @@ test('backup normalizes immutable keys and rejects malformed payloads atomically
  assert.equal(parseBackup(encode([event('2026-10-20'),event('2026-10-20')])).length,1);
  for(const text of ['{}','bad',encode([{...event('2026-10-20'),id:'wrong'}]),encode([event('2026-10-20'),event('2026-02-30')]),' '.repeat(2_000_001)])assert.throws(()=>parseBackup(text));
  assert.throws(()=>validateEvents(Array(20001).fill(event('2026-10-20'))));
+});
+
+test('four lessons on the same day advance course progress but count one streak day',()=>{
+ const events=lessonIds.map(lesson=>({id:`${lesson}:2026-10-22`,lesson,day:'2026-10-22'}));
+ const state=summary([...events,events[2]],'2026-10-22');
+ assert.equal(state.completedLessons,4);assert.equal(state.days,1);assert.equal(state.current,1);assert.equal(state.events.length,4);
+ for(const id of lessonIds)assert.deepEqual(state.perLesson[id],{complete:true,today:true,days:1});
+ assert.equal(summary(events.slice(0,1),'2026-10-22').perLesson[lessonIds[1]].complete,false);
+});
+
+test('v1 imports retain original event identity and v2 retains all lesson completions',()=>{
+ const original=event('2026-10-20');
+ assert.deepEqual(parseBackup(JSON.stringify({format:'lernfunke-progress',version:1,events:[original]})),[original]);
+ const newer={id:`${lessonIds[1]}:2026-10-22`,lesson:lessonIds[1],day:'2026-10-22'};
+ assert.equal(parseBackup(JSON.stringify({format:'lernfunke-progress',version:2,events:[original,newer]})).length,2);
+ assert.throws(()=>parseBackup(JSON.stringify({format:'lernfunke-progress',version:1,events:[original,newer]})));
+ assert.throws(()=>validateEvents([{id:'constructor:2026-10-22',lesson:'constructor',day:'2026-10-22'}]));
+});
+
+test('authored lesson fixtures cover boundary cases and each starter needs a correction',()=>{
+ assert.equal(new Set(lessonIds).size,4);
+ for(const lesson of lessons){
+  assert.equal(lesson.cases.length,4);assert.match(lesson.parameter,/^[a-z]+$/);
+  const starter=new Function(lesson.parameter,lesson.starter);
+  assert.ok(lesson.cases.some(([input,expected])=>!Object.is(starter(input),expected)),lesson.id);
+ }
+ assert.deepEqual(lessons[2].cases.find(([input])=>input===50),[50,0]);
+ assert.deepEqual(lessons[3].cases.find(([input])=>input===0),[0,0]);
 });
