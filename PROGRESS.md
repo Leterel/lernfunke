@@ -51,3 +51,18 @@ geprüft. .gitignore schützt lokale env/Schlüssel/Keystores und Exportnamen.
 Öffentlicher Quellcode jetzt https://github.com/Leterel/lernfunke (frühere
 Einträge ohne Repository sind historische Stände). Anleitung START-HIER.md,
 Nachweise VERIFICATION-20261022.md; keine Cloud-/KI-/Store-/Zertifikatsbehauptung.
+
+## 25.10.2026 — acht Lektionen und strukturierte Aufgaben
+
+Lernfunke 0.3.0 erweitert den bestehenden Lernpfad um Arrays, Stringmethoden,
+Objekteigenschaften und eine kombinierte Warenkorbaufgabe mit Versandgrenze.
+Alle Inhalte sind selbst verfasst. Bisherige IDs und Fortschritte bleiben erhalten;
+v1- und v2-Import kompatibel, weiterhin ein Lerntag für mehrere Abschlüsse am Tag.
+Der isolierte Runner unterstützt feste strukturierte JSON-Eingaben und echte
+String-Rückgabewerte. Angezeigte Eingaben werden vor Nutzer-Mutationen fixiert.
+App-Shell-Cache v3, keine IndexedDB-Löschung.
+
+9 Node-Testgruppen und 31 Chromechecks bestanden: alle acht Aufgaben offline,
+richtige/falsche Lösungen, Isolationsregressionen, Altbackups und Datenbank v1,
+Speicherfehler/Idempotenz, String-/Array-Anzeige sowie Warenkorbtabelle auf 390px.
+Details: VERIFICATION-20261025.md. Kein zusätzlicher Server, keine Konten/Kosten.

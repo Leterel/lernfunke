@@ -1,17 +1,18 @@
-# Lernfunke 0.2.0 starten
+# Lernfunke 0.3.0 starten
 
 1. Das vollständige Quellenpaket in einen eigenen Ordner entpacken.
-2. Mit vorhandenem Node.js24+ unter Windows `START.cmd` doppelklicken.
+2. Mit vorhandenem Node.js 24+ unter Windows `START.cmd` doppelklicken.
    Alternativ im Ordner `node server.mjs` starten. Kein npm-Installationsschritt
    für die App nötig. Das Terminal geöffnet lassen.
-3. [Lernfunke lokal öffnen](http://127.0.0.1:4178/). Vier eigene deutsche
-   Lektionen führen von return über Variablen und if/else bis zur for-Schleife.
+3. [Lernfunke lokal öffnen](http://127.0.0.1:4178/). Acht eigene deutsche
+   Lektionen führen von return über Variablen, Bedingungen und Schleifen zu
+   Arrays, Texten, Objekten und einem kleinen Warenkorb.
 4. Aufgabe lesen, den Startcode korrigieren und „Code ausführen“ drücken.
    Vier echte Tests zeigen Eingabe, Erwartung und Ergebnis. Erst nach
    erfolgreichem Speichern erscheint die Abschlussbestätigung.
 5. Mit „Nächste Lektion“ fortfahren oder oben eine Lektion auswählen.
    Alle Lektionen sind frei zugänglich. Jede hat ihren eigenen Abschluss;
-   vier Abschlüsse am selben Tag ergeben trotzdem nur einen Lerntag.
+   acht Abschlüsse am selben Tag ergeben trotzdem nur einen Lerntag.
 
 „Offline bereit“ abwarten. Danach funktionieren Neuladen, Aufgabenwechsel und
 isolierte Codeausführung auch ohne Internet. Immer dieselbe lokale Adresse,
@@ -29,4 +30,4 @@ sondern die lokale Startadresse nutzen. Strg+C im Terminal beendet den Server.
 Kein Konto, kein Hosting, keine KI und keine Kosten pro Nutzung. Eigene kurze
 Übungslösungen eingeben; keine fremden Pakete. Der Browser-Sandbox fehlt eine
 harte RAM-Quote. Tagesstreak und Backups sind keine Prüfungszertifikate.
-Ausführliche Nachweise/Grenzen: README.md, SECURITY.md und VERIFICATION-20261022.md.
+Ausführliche Nachweise/Grenzen: README.md, SECURITY.md und VERIFICATION-20261025.md.

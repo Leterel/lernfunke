@@ -1,4 +1,4 @@
-// Self-authored content. Only trusted numeric fixtures enter the isolated runner.
+// Self-authored content. Only these trusted JSON fixtures enter the isolated runner.
 export const lessons = [
  {id:'js-return-1',title:'Werte zurückgeben',minutes:5,heading:'Eine kleine Maschine für Zahlen',
   explanation:'Eine Funktion erhält eine Eingabe und liefert mit return ein Ergebnis zurück. Der Parameter zahl ist ein Name für die Eingabe. Rechnen funktioniert damit auch bei null, negativen Zahlen und Brüchen.',
@@ -23,7 +23,31 @@ export const lessons = [
   example:'function dreimalEins() {\n  let summe = 0;\n  for (let i = 0; i < 3; i++) {\n    summe += 1;\n  }\n  return summe; // 3\n}',
   task:'Addiere alle ganzen Zahlen von 1 bis einschließlich anzahl. Bei 4 ist das 1 + 2 + 3 + 4 = 10. Bei 0 bleibt die Summe 0. Die Eingabe ist eine nichtnegative ganze Zahl.',
   hint:'Starte summe bei 0 und i bei 1. Solange i <= anzahl gilt, addierst du i zur Summe und erhöhst i. Gib die Summe erst nach der Schleife zurück.',
-  exercise:'Die Summe von 1 bis n',signature:'function aufsummieren(anzahl) {',starter:'let summe = 0;\nfor (let i = 1; i < anzahl; i++) {\n  summe += i;\n}\nreturn summe;',parameter:'anzahl',cases:[[0,0],[1,1],[4,10],[10,55]]}
+  exercise:'Die Summe von 1 bis n',signature:'function aufsummieren(anzahl) {',starter:'let summe = 0;\nfor (let i = 1; i < anzahl; i++) {\n  summe += i;\n}\nreturn summe;',parameter:'anzahl',cases:[[0,0],[1,1],[4,10],[10,55]]},
+ {id:'js-arrays-1',title:'Zahlenlisten durchlaufen',minutes:8,heading:'Mehrere Werte in einer Liste',
+  explanation:'Ein Array sammelt mehrere Werte in eckigen Klammern. Mit for (const wert of liste) erhältst du nacheinander jeden Eintrag. Eine leere Liste hat keinen Eintrag; die Schleife wird dann gar nicht ausgeführt.',
+  example:'function anzahlPositiver(zahlen) {\n  let anzahl = 0;\n  for (const zahl of zahlen) {\n    if (zahl > 0) anzahl += 1;\n  }\n  return anzahl;\n}',
+  task:'Addiere alle Zahlen in zahlen. Die Liste darf leer sein und negative Zahlen enthalten. Beispiele: [2, 3] → 5 und [] → 0. Gib eine Zahl zurück, nicht die Liste.',
+  hint:'Starte mit let summe = 0. Addiere in einer for-of-Schleife jede zahl aus zahlen. Gib summe erst nach der Schleife zurück.',
+  exercise:'Die Summe einer Zahlenliste',signature:'function listenSumme(zahlen) {',starter:'let summe = 0;\nfor (const zahl of zahlen) {\n  summe = zahl;\n}\nreturn summe;',parameter:'zahlen',cases:[[[],0],[[4],4],[[2,3,5],10],[[-5,2,0],-3]]},
+ {id:'js-strings-1',title:'Texte bearbeiten',minutes:7,heading:'Ein Text ist mehr als ein Name',
+  explanation:'Strings sind Texte in Anführungszeichen. Methoden liefern bearbeitete Texte zurück: trim() entfernt Leerzeichen am Anfang und Ende, toUpperCase() macht Buchstaben groß. Methoden lassen sich verketten; der Originaltext bleibt dabei unverändert.',
+  example:'function kleinOhneRand(text) {\n  return text.trim().toLowerCase();\n}\n\nkleinOhneRand("  HALLO  "); // "hallo"',
+  task:'Entferne Leerzeichen am Rand von text und wandle alle Buchstaben in Großbuchstaben um. Leerzeichen zwischen Wörtern bleiben erhalten. Ein leerer Text bleibt leer.',
+  hint:'Rufe zuerst text.trim() auf und auf dessen Ergebnis .toUpperCase(). Gib den neuen Text mit return zurück.',
+  exercise:'Ein ordentliches Namensschild',signature:'function namensschild(text) {',starter:'return text.toUpperCase();',parameter:'text',cases:[['  hallo  ','HALLO'],['Mara','MARA'],['   ',''],['  zwei worte  ','ZWEI WORTE']]},
+ {id:'js-objects-1',title:'Eigenschaften lesen',minutes:8,heading:'Zusammengehörige Werte bündeln',
+  explanation:'Ein Objekt speichert Werte unter Namen. Bei {preis: 3, anzahl: 2} liest du mit artikel.preis den Preis und mit artikel.anzahl die Anzahl. Der Punkt ist ein Zugriff auf eine Eigenschaft, kein Rechenzeichen.',
+  example:'function beschreibung(person) {\n  return person.name + " aus " + person.ort;\n}\n\nbeschreibung({name: "Mara", ort: "Berlin"});',
+  task:'Berechne den Gesamtpreis für artikel: preis mal anzahl. Beide Eigenschaften sind immer vorhanden und nichtnegativ. Anzahl 0 bedeutet Gesamtpreis 0. Runde das Ergebnis hier nicht.',
+  hint:'Lies artikel.preis und artikel.anzahl. Multipliziere die beiden Zahlen mit * und gib das Produkt zurück.',
+  exercise:'Was kostet dieser Artikel?',signature:'function artikelPreis(artikel) {',starter:'return artikel.preis;',parameter:'artikel',cases:[[{preis:3,anzahl:2},6],[{preis:4,anzahl:0},0],[{preis:1.5,anzahl:3},4.5],[{preis:0,anzahl:8},0]]},
+ {id:'js-cart-1',title:'Abschluss: ein Warenkorb',minutes:12,heading:'Bausteine zu einer Lösung verbinden',
+  explanation:'Jetzt kombinierst du Variablen, Arrays, Objekte, Schleifen und Bedingungen. Jeder Eintrag im Warenkorb ist ein Objekt mit preis und anzahl. Rechne zunächst die Artikelsumme aus. Entscheide erst danach über die Versandkosten.',
+  example:'function gesamtAnzahl(artikel) {\n  let anzahl = 0;\n  for (const eintrag of artikel) {\n    anzahl += eintrag.anzahl;\n  }\n  return anzahl;\n}',
+  task:'Berechne die Summe aus preis * anzahl für alle Einträge in warenkorb. Ein leerer Warenkorb kostet 0. Bei einer positiven Summe unter 50 kommen 5 Versand dazu; ab genau 50 kein Versand. Alle Preise und Anzahlen sind nichtnegativ.',
+  hint:'Addiere in einer for-of-Schleife eintrag.preis * eintrag.anzahl zu summe. Falls summe > 0 und summe < 50 gilt, addiere 5. Gib die Gesamtsumme zurück. && verbindet zwei Bedingungen.',
+  exercise:'Artikel plus passenden Versand',signature:'function warenkorbPreis(warenkorb) {',starter:'let summe = 0;\nfor (const eintrag of warenkorb) {\n  summe += eintrag.preis * eintrag.anzahl;\n}\nreturn summe;',parameter:'warenkorb',cases:[[[],0],[[{preis:3,anzahl:2},{preis:4,anzahl:1}],15],[[{preis:25,anzahl:2}],50],[[{preis:30,anzahl:2},{preis:0,anzahl:3}],60]]}
 ];
 export const lessonIds=lessons.map(lesson=>lesson.id);
 export const lessonSpecs=Object.fromEntries(lessons.map(({id,parameter,cases})=>[id,{parameter,cases}]));

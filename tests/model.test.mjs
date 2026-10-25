@@ -27,10 +27,10 @@ test('backup normalizes immutable keys and rejects malformed payloads atomically
  assert.throws(()=>validateEvents(Array(20001).fill(event('2026-10-20'))));
 });
 
-test('four lessons on the same day advance course progress but count one streak day',()=>{
+test('eight lessons on the same day advance course progress but count one streak day',()=>{
  const events=lessonIds.map(lesson=>({id:`${lesson}:2026-10-22`,lesson,day:'2026-10-22'}));
  const state=summary([...events,events[2]],'2026-10-22');
- assert.equal(state.completedLessons,4);assert.equal(state.days,1);assert.equal(state.current,1);assert.equal(state.events.length,4);
+ assert.equal(state.completedLessons,lessonIds.length);assert.equal(state.days,1);assert.equal(state.current,1);assert.equal(state.events.length,lessonIds.length);
  for(const id of lessonIds)assert.deepEqual(state.perLesson[id],{complete:true,today:true,days:1});
  assert.equal(summary(events.slice(0,1),'2026-10-22').perLesson[lessonIds[1]].complete,false);
 });
@@ -45,7 +45,7 @@ test('v1 imports retain original event identity and v2 retains all lesson comple
 });
 
 test('authored lesson fixtures cover boundary cases and each starter needs a correction',()=>{
- assert.equal(new Set(lessonIds).size,4);
+ assert.equal(new Set(lessonIds).size,8);
  for(const lesson of lessons){
   assert.equal(lesson.cases.length,4);assert.match(lesson.parameter,/^[a-z]+$/);
   const starter=new Function(lesson.parameter,lesson.starter);
@@ -53,4 +53,14 @@ test('authored lesson fixtures cover boundary cases and each starter needs a cor
  }
  assert.deepEqual(lessons[2].cases.find(([input])=>input===50),[50,0]);
  assert.deepEqual(lessons[3].cases.find(([input])=>input===0),[0,0]);
+});
+
+
+test('original four v2 completions stay valid and newly authored lessons use structured fixtures',()=>{
+ const events=lessonIds.slice(0,4).map(lesson=>({id:lesson+':2026-10-22',lesson,day:'2026-10-22'}));
+ const restored=parseBackup(JSON.stringify({format:'lernfunke-progress',version:2,events}));
+ assert.equal(restored.length,4);assert.equal(summary(restored,'2026-10-25').completedLessons,4);
+ assert.equal(summary(restored,'2026-10-25').perLesson['js-arrays-1'].complete,false);
+ assert.deepEqual(lessons[4].cases[0],[[],0]);assert.deepEqual(lessons[5].cases[2],['   ','']);
+ assert.deepEqual(lessons[7].cases[2],[[{preis:25,anzahl:2}],50]);
 });

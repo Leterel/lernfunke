@@ -17,13 +17,13 @@
     const send=event.ports[0].postMessage.bind(event.ports[0]), equal=Object.is, stringify=String;
     self.onmessage=null;
     try {
-     const fixtures=${JSON.stringify(spec.cases)},fn=new Function(${JSON.stringify(spec.parameter)},'"use strict";'+${JSON.stringify(code)});
+     const fixtures=${JSON.stringify(spec.cases)},inputLabels=${JSON.stringify(spec.cases.map(([input])=>typeof input==='object'?JSON.stringify(input):input))},fn=new Function(${JSON.stringify(spec.parameter)},'"use strict";'+${JSON.stringify(code)});
      const results=[];let passed=true;
      for(let index=0;index<fixtures.length;index++) {
       const input=fixtures[index][0],expected=fixtures[index][1];
       const actual=fn(input);
       const pass=equal(actual,expected);passed=passed&&pass;
-      results[index]={input,expected,actual:typeof actual==='number'?stringify(actual):typeof actual,pass};
+      results[index]={input:inputLabels[index],expected,actual:typeof actual==='number'||typeof actual==='string'||typeof actual==='boolean'?stringify(actual):typeof actual,pass};
      }
      send({ok:passed,error:'',results});
     } catch(error){send({ok:false,error:String(error?.message||error).slice(0,500),results:[]});}

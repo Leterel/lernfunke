@@ -1,11 +1,11 @@
 # Lernfunke – lokal programmieren lernen
 
-Eigenständiger deutscher Prototyp: vier eigene JavaScript-Lektionen, echte
+Eigenständiger deutscher Prototyp: acht eigene JavaScript-Lektionen, echte
 Codeausführung, Tagesstreak und lokale Sicherungen. Keine Konten, Cloud,
 Werbung, Laufzeit-Abhängigkeiten oder Serverkosten. Keine fremden Kurse/Assets.
 
 Öffentlicher Quellcode: [Leterel/lernfunke](https://github.com/Leterel/lernfunke).
-Aktueller Stand: 0.2.0. Kurzanleitung: [START-HIER.md](START-HIER.md).
+Aktueller Stand: 0.3.0. Kurzanleitung: [START-HIER.md](START-HIER.md).
 
 ## Starten
 
@@ -30,7 +30,7 @@ Nicht `index.html` direkt öffnen: Module und Service Worker brauchen die lokale
 
 ## Umgesetzt
 
-- Zusammenhängender Lernpfad: `return`, Variablen, `if/else` und `for`-Schleifen.
+- Zusammenhängender Lernpfad: `return`, Variablen, `if/else`, `for`-Schleifen, Arrays, Texte, Objekte und ein Warenkorb-Abschluss.
   Jede Lektion hat eigene Erklärungen, Beispiele, Aufgabe, Hinweis und vier echte
   Funktionsaufrufe, darunter Null-/Bruchwerte und Entscheidungsgrenzen.
 - Freie Lektionwahl, nächste Lektion und dauerhaft gespeicherter Zwischenstand
@@ -58,7 +58,7 @@ Import ergänzt, löscht aber nichts. Sicherungen enthalten nur Tagesabschlüsse
 keinen Code oder Kontodaten. Gerätezeit und Sicherungen sind vom Nutzer editierbar:
 kein manipulationssicherer Leistungsnachweis und kein anerkanntes Zertifikat.
 
-Vier Lektionen zum Einstieg; englische Kurse, KI-Tutor, Konten, Synchronisierung und native
+Acht Lektionen zum Einstieg; englische Kurse, KI-Tutor, Konten, Synchronisierung und native
 App sind spätere Arbeit. Die Sandbox ist keine Betriebssystem-VM mit garantierter
 RAM-Quote. [SECURITY.md](SECURITY.md) erklärt die Ausführungsgrenzen.
 
@@ -80,5 +80,5 @@ vorhandenes Playwright-Modul über `PLAYWRIGHT_MODULE` angeben.
 Alle Tests benutzen frische Profile, synthetischen Code und temporären Loopback-
 Server. Keine privaten Tabs, Dateien oder physischen Geräte. Belege: fünf Node-
 Testgruppen im ursprünglichen Stand siehe [VERIFICATION.md](VERIFICATION.md).
-Der neue Lernpfad wird mit acht Node-Testgruppen und 28 Chrome-Prüfungen geprüft:
-[VERIFICATION-20261022.md](VERIFICATION-20261022.md).
+Der neue Lernpfad wird mit neun Node-Testgruppen und 31 Chrome-Prüfungen geprüft:
+[VERIFICATION-20261025.md](VERIFICATION-20261025.md).

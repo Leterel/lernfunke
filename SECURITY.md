@@ -27,7 +27,7 @@ nicht zwischen Versuchen übernommen.
 ## Lektionen und feste Tests
 
 Der Elternaufruf übermittelt ausschließlich Lerncode, eine bekannte Lektion-ID
-und die Nonce. Parameter und vier numerische Prüffälle werden beim Serverstart
+und die Nonce. Parameter und vier eigene JSON-Prüffälle werden beim Serverstart
 aus dem eigenen `curriculum.js` in die Runner-Vorlage eingebettet und in deren
 CSP-Hash einbezogen. Der Service Worker speichert genau diese gerenderte Vorlage.
 Der Runner akzeptiert nur eigene IDs (keine geerbten Objektschlüssel) und ignoriert
@@ -58,3 +58,12 @@ Bei App-Shell-Änderungen den Cache-Namen in `sw.js` erhöhen. Updates löschen 
 alte Lernfunke-Shell-Caches, keine IndexedDB. Netzwerk, `allow-same-origin` und
 beliebige externe Skripte nicht in die Sandbox aufnehmen. Isolation und Offline-
 Codeausführung nach Änderungen erneut im Browser prüfen.
+
+## Strukturierte Aufgaben ab 0.3.0
+
+Arrays und Objekte stammen ausschließlich aus den eigenen eingebetteten JSON-Fixtures.
+Die Eingabeanzeige wird vor der Lerncodeausführung aus diesen Daten erzeugt;
+Änderungen an einem übergebenen Array können die angezeigte Testeingabe nicht
+verfälschen. Ergebnisse bleiben primitive Zahlen oder Texte; fremde Objekte
+werden nicht als HTML oder ausführbarer Code dargestellt. Die bestehenden
+Isolationsgrenzen und Zeitlimits gelten weiterhin.
