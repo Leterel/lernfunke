@@ -5,7 +5,7 @@ Codeausführung, Tagesstreak und lokale Sicherungen. Keine Konten, Cloud,
 Werbung, Laufzeit-Abhängigkeiten oder Serverkosten. Keine fremden Kurse/Assets.
 
 Öffentlicher Quellcode: [Leterel/lernfunke](https://github.com/Leterel/lernfunke).
-Aktueller Stand: 0.3.0. Kurzanleitung: [START-HIER.md](START-HIER.md).
+Aktueller Stand: 0.4.0. Kurzanleitung: [START-HIER.md](START-HIER.md).
 
 ## Starten
 
@@ -35,8 +35,7 @@ Nicht `index.html` direkt öffnen: Module und Service Worker brauchen die lokale
   Funktionsaufrufe, darunter Null-/Bruchwerte und Entscheidungsgrenzen.
 - Freie Lektionwahl, nächste Lektion und dauerhaft gespeicherter Zwischenstand
   pro Lektion. Mehrere Lektionen am selben Tag ergeben nur einen Lerntag.
-  Codeentwürfe bleiben beim Wechseln im offenen Tab erhalten; nach Neuladen
-  erscheint wieder der Startcode. Nur Abschlüsse werden gesichert.
+  Codeentwürfe werden separat pro Lektion lokal gespeichert, auch nach Reload und offline. Nach 400 ms Pause wird gespeichert; „Entwurf speichern“ speichert sofort. Erst die bestätigte Meldung bedeutet abgeschlossen. Fortschritts-Backups enthalten ausschließlich Abschlüsse, keinen Code.
 - Opaque-Origin-Sandbox ohne Same-Origin-Berechtigung, darin ein kurzlebiger
   Worker. CSP sperrt Netzwerk. Ein Worker auf dem Hauptorigin wird nicht verwendet.
   Ein-Sekunden-Workerlimit plus äußere Drei-Sekunden-Grenze.
@@ -81,4 +80,4 @@ Alle Tests benutzen frische Profile, synthetischen Code und temporären Loopback
 Server. Keine privaten Tabs, Dateien oder physischen Geräte. Belege: fünf Node-
 Testgruppen im ursprünglichen Stand siehe [VERIFICATION.md](VERIFICATION.md).
 Der neue Lernpfad wird mit neun Node-Testgruppen und 31 Chrome-Prüfungen geprüft:
-[VERIFICATION-20261025.md](VERIFICATION-20261025.md).
+[VERIFICATION-20261025.md](VERIFICATION-20261025.md). Entwurfsspeicherung ab 0.4.0: zehn Node-Testgruppen und acht zusätzliche Chromechecks, siehe [VERIFICATION-20261026.md](VERIFICATION-20261026.md).

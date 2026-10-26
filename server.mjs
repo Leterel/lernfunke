@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,extname} from 'node:path';
 import {lessonSpecs} from './curriculum.js';
 const root=fileURLToPath(new URL('.',import.meta.url));
-const files=new Set(['index.html','app.js','store.js','model.js','curriculum.js','execute.js','runner.html','styles.css','sw.js','manifest.webmanifest','icon.svg']);
+const files=new Set(['index.html','app.js','drafts.js','store.js','model.js','curriculum.js','execute.js','runner.html','styles.css','sw.js','manifest.webmanifest','icon.svg']);
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webmanifest':'application/manifest+json'};
 const sandbox="sandbox allow-scripts; default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'";
 export async function serve(port=4178){

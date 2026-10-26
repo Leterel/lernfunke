@@ -66,3 +66,19 @@ App-Shell-Cache v3, keine IndexedDB-Löschung.
 richtige/falsche Lösungen, Isolationsregressionen, Altbackups und Datenbank v1,
 Speicherfehler/Idempotenz, String-/Array-Anzeige sowie Warenkorbtabelle auf 390px.
 Details: VERIFICATION-20261025.md. Kein zusätzlicher Server, keine Konten/Kosten.
+
+## 26.10.2026 — persistente lokale Entwürfe (0.4.0)
+
+Entwürfe je bekannter Lektion mit eigener IndexedDB und 32-KiB-Grenze gespeichert.
+400-ms-Debounce und sofortiger Speicherknopf, Commitstatus, Wiederherstellung
+bei Reload/offline und bewusster Startcode-Reset. Revisionsvergleich innerhalb
+Schreibtransaktion schützt vor stillem Überschreiben zwischen Tabs; explizite
+Konfliktlösung erhält den aktuellen Text. Fortschritt/Backupformat unverändert,
+Codeentwürfe ausdrücklich nicht in Fortschrittsexporten enthalten.
+
+10/10 Node-Testgruppen und bestehende 31/31 Chromechecks bestanden. Acht neue
+Chromechecks für Entwürfe: Reload pro Lektion, Offline-Commit, Konflikt zwischen
+Tabs, 20 konkurrierende Writes (ein Commit/19 Konflikte), Reset, Größe, korrupter
+Record, verweigerter Speicher, unveränderter Fortschritt/Backup und Mobilansicht.
+Desktop-/Mobilbelege visuell geprüft. Kein physisches Gerät, nur synthetischer
+Code und eigene Loopbackserver. Details VERIFICATION-20261026.md.

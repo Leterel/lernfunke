@@ -67,3 +67,22 @@ Die Eingabeanzeige wird vor der Lerncodeausführung aus diesen Daten erzeugt;
 verfälschen. Ergebnisse bleiben primitive Zahlen oder Texte; fremde Objekte
 werden nicht als HTML oder ausführbarer Code dargestellt. Die bestehenden
 Isolationsgrenzen und Zeitlimits gelten weiterhin.
+
+## Lokale Entwürfe ab 0.4.0
+
+Entwürfe liegen in einer getrennten IndexedDB `lernfunke-drafts` Version 1,
+Store `drafts`, nur für die acht bekannten Lektionen. Maximal 32 KiB UTF-8 je
+Entwurf, gültige Zeichen und vollständig geprüfte Records. Fortschrittsdatenbank
+`lernfunke-local` v1, Abschluss-IDs und Fortschrittsbackups bleiben unverändert.
+Es gibt keine Übertragung von Code an den lokalen Server oder externe Dienste.
+
+Jeder Schreibvorgang liest und vergleicht die erwartete Revision in derselben
+readwrite-Transaktion. Ein inzwischen gespeicherter fremder Tab erzeugt einen
+Konflikt statt stillen Überschreibens; aktive Texte werden nicht automatisch
+ersetzt. Nur die ausdrücklich beschrifteten Knöpfe laden eine fremde Fassung,
+übernehmen den eigenen Entwurf oder setzen auf Startcode zurück. Erfolg wird
+erst nach oncomplete gemeldet. Browser-Schließen während eines noch laufenden
+Schreibvorgangs garantiert keine Speicherung: Bestätigung abwarten. Es gibt
+eine beforeunload-Warnung bei nicht bestätigten Entwürfen; Browser können solche
+Dialoge unterdrücken. Fortschrittsbackups enthalten bewusst keinen Nutzercode.
+Browserdatenlöschung oder ein anderer Port/Origin trennt auch diese Entwürfe.

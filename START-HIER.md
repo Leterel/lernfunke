@@ -1,4 +1,4 @@
-# Lernfunke 0.3.0 starten
+# Lernfunke 0.4.0 starten
 
 1. Das vollständige Quellenpaket in einen eigenen Ordner entpacken.
 2. Mit vorhandenem Node.js 24+ unter Windows `START.cmd` doppelklicken.
@@ -20,7 +20,7 @@ denselben Port und dasselbe Browserprofil benutzen: Dort liegt der Fortschritt.
 Vor Browserreinigung oder Gerätewechsel eine Sicherung exportieren. Alte
 v1-Sicherungen sind weiterhin importierbar; neue v2-Sicherungen enthalten alle
 Lektionen. Import ergänzt den bestehenden Stand, ohne alte Lerntage zu löschen.
-Codeentwürfe werden nur im offenen Tab behalten, nicht in Backups gespeichert.
+Codeentwürfe werden pro Lektion separat in diesem Browser gespeichert. Nach kurzer Pause oder „Entwurf speichern“ die Bestätigung abwarten, bevor du schließt. Bei noch ungespeichertem Text warnt der Browser vor dem Verlassen. „Auf Startcode zurücksetzen“ ersetzt den Entwurf bewusst durch die Vorlage. Bei gleichzeitig bearbeitenden Tabs bleibt dein Text im Konflikt erhalten: gespeicherte Fassung laden oder den eigenen Entwurf bewusst übernehmen. Browserreinigung kann Entwürfe löschen; sie sind nicht im Fortschritts-Backup enthalten.
 
 Die erste Lösung lautet `return zahl * 2;`. Weitere Lösungen selbst ausprobieren;
 jede Aufgabe hat einen aufklappbaren Hinweis. Nicht index.html direkt öffnen,
@@ -30,4 +30,4 @@ sondern die lokale Startadresse nutzen. Strg+C im Terminal beendet den Server.
 Kein Konto, kein Hosting, keine KI und keine Kosten pro Nutzung. Eigene kurze
 Übungslösungen eingeben; keine fremden Pakete. Der Browser-Sandbox fehlt eine
 harte RAM-Quote. Tagesstreak und Backups sind keine Prüfungszertifikate.
-Ausführliche Nachweise/Grenzen: README.md, SECURITY.md und VERIFICATION-20261025.md.
+Ausführliche Nachweise/Grenzen: README.md, SECURITY.md und VERIFICATION-20261026.md.
